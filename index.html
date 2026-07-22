@@ -472,27 +472,28 @@ html[data-theme="dark"] .starthere{color:#160f1e}
 /* ============================================================
    LIQUID GLASS LAYER — translucent, luminous panels over photos
    ============================================================ */
+/* glass tokens — IDENTICAL alpha in both themes; only the tint colour differs,
+   so light and dark are equally transparent. One place to tune it. */
+:root{--glass-a:rgba(255,255,255,.46);--glass-b:rgba(255,255,255,.33);--glass-brd:rgba(255,255,255,.55);--glass-hl:rgba(255,255,255,.60)}
+html[data-theme="dark"]{--glass-a:rgba(26,19,37,.46);--glass-b:rgba(13,9,19,.33);--glass-brd:rgba(255,255,255,.12);--glass-hl:rgba(255,255,255,.10)}
 .sec{
-  background:linear-gradient(165deg,rgba(255,255,255,.58),rgba(255,255,255,.34) 55%,rgba(255,255,255,.46));
-  -webkit-backdrop-filter:blur(18px) saturate(1.6);backdrop-filter:blur(18px) saturate(1.6);
-  border:1px solid rgba(255,255,255,.60);border-radius:24px;
-  box-shadow:0 24px 60px rgba(70,25,50,.15),inset 0 1px 0 rgba(255,255,255,.70),inset 0 -1px 0 rgba(255,255,255,.16)}
-.sec:hover{box-shadow:0 30px 74px rgba(70,25,50,.20),inset 0 1px 0 rgba(255,255,255,.70),inset 0 -1px 0 rgba(255,255,255,.16)}
-.rail{background:linear-gradient(180deg,rgba(255,255,255,.56),rgba(255,255,255,.40));
-  -webkit-backdrop-filter:blur(18px) saturate(1.6);backdrop-filter:blur(18px) saturate(1.6);
-  border-right:1px solid rgba(255,255,255,.55)}
-.chapnav .cn-btn{background:linear-gradient(165deg,rgba(255,255,255,.55),rgba(255,255,255,.38));border:1px solid rgba(255,255,255,.55);
-  -webkit-backdrop-filter:blur(18px) saturate(1.6);backdrop-filter:blur(18px) saturate(1.6)}
-.resume-pill,.q-results,#onb .card,.toast{-webkit-backdrop-filter:blur(20px) saturate(1.6);backdrop-filter:blur(20px) saturate(1.6)}
-html[data-theme="dark"] .sec{
-  background:linear-gradient(165deg,rgba(30,24,46,.62),rgba(17,13,30,.52) 55%,rgba(24,18,40,.56));
-  border:1px solid rgba(255,255,255,.13);
-  box-shadow:0 28px 70px rgba(0,0,0,.55),inset 0 1px 0 rgba(255,255,255,.10)}
-html[data-theme="dark"] .sec:hover{box-shadow:0 34px 84px rgba(0,0,0,.60),inset 0 1px 0 rgba(255,255,255,.10)}
-html[data-theme="dark"] .rail{background:linear-gradient(180deg,rgba(26,20,40,.68),rgba(15,11,26,.62));border-right:1px solid rgba(255,255,255,.10)}
-html[data-theme="dark"] .chapnav .cn-btn{background:linear-gradient(165deg,rgba(30,24,46,.60),rgba(17,13,30,.52));border:1px solid rgba(255,255,255,.12)}
+  background:linear-gradient(160deg,var(--glass-a),var(--glass-b) 62%,var(--glass-a));
+  -webkit-backdrop-filter:blur(20px) saturate(1.5);backdrop-filter:blur(20px) saturate(1.5);
+  border:1px solid var(--glass-brd);border-radius:24px;
+  box-shadow:0 24px 58px rgba(40,16,32,.16),inset 0 1px 0 var(--glass-hl)}
+html[data-theme="dark"] .sec{box-shadow:0 28px 70px rgba(0,0,0,.5),inset 0 1px 0 var(--glass-hl)}
+.sec:hover{box-shadow:0 30px 72px rgba(40,16,32,.2),inset 0 1px 0 var(--glass-hl)}
+html[data-theme="dark"] .sec:hover{box-shadow:0 34px 84px rgba(0,0,0,.56),inset 0 1px 0 var(--glass-hl)}
+.rail{background:linear-gradient(180deg,var(--glass-a),var(--glass-b));
+  -webkit-backdrop-filter:blur(20px) saturate(1.5);backdrop-filter:blur(20px) saturate(1.5);
+  border-right:1px solid var(--glass-brd)}
+.chapnav .cn-btn{background:linear-gradient(160deg,var(--glass-a),var(--glass-b));border:1px solid var(--glass-brd);
+  -webkit-backdrop-filter:blur(16px) saturate(1.5);backdrop-filter:blur(16px) saturate(1.5)}
+.resume-pill,.q-results,#onb .card,.toast{-webkit-backdrop-filter:blur(20px) saturate(1.5);backdrop-filter:blur(20px) saturate(1.5)}
+/* mobile: SAME transparent glass (consistent with desktop), lighter blur for perf.
+   'Effects: lite' still turns blur off entirely for low-end phones. */
 @media (max-width:900px){
-  .sec,.rail,.chapnav .cn-btn{-webkit-backdrop-filter:none;backdrop-filter:none;background:var(--panel)}
+  .sec,.rail,.chapnav .cn-btn{-webkit-backdrop-filter:blur(13px) saturate(1.45);backdrop-filter:blur(13px) saturate(1.45)}
 }
 
 /* ---- romaji training wheels ---- */
