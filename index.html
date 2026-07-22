@@ -553,12 +553,15 @@ html[data-fx="lite"] #petals{display:none}
   .main{padding:14px 14px calc(96px + env(safe-area-inset-bottom))}
 
   /* rail → slide-in drawer */
-  .rail{position:fixed;top:0;left:0;height:100%;height:100dvh;width:min(86vw,330px);z-index:95;gap:12px;
-    padding:14px 14px calc(24px + env(safe-area-inset-bottom));
+  .rail{position:fixed;top:0;left:0;height:100%;height:100dvh;max-height:100dvh;width:min(86vw,330px);z-index:95;gap:12px;
+    padding:14px 14px calc(28px + env(safe-area-inset-bottom));
     transform:translateX(-102%);transition:transform .27s cubic-bezier(.4,0,.2,1);
-    border-right:1px solid var(--line);border-bottom:none;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
+    border-right:1px solid var(--line);border-bottom:none;
+    overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
   body.nav-open .rail{transform:translateX(0);box-shadow:10px 0 44px rgba(0,0,0,.34)}
-  .toc{max-height:none;flex:1 1 auto}
+  /* the WHOLE drawer scrolls as one column — the TOC must NOT be a nested scroll
+     region (that was trapping the list at a few chapters). Natural height, no grow. */
+  .toc{max-height:none;overflow:visible;flex:0 0 auto}
   .rail-close{display:flex;align-self:flex-end;align-items:center;gap:6px;border:1px solid var(--line);border-radius:9px;
     background:var(--bg);color:var(--mut);font:inherit;font-size:13px;padding:6px 12px;cursor:pointer;margin-bottom:2px}
 
