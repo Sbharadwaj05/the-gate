@@ -2,7 +2,12 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#C13515" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#160f1e" media="(prefers-color-scheme: dark)">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>The Gate</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#9961;</text></svg>">
 <script>(function(){var d=document.documentElement;d.setAttribute("data-site","gate");try{var t=localStorage.getItem("gate-theme");if(t){if(JSON.parse(t)==="dark")d.setAttribute("data-theme","dark");}else if(window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches){d.setAttribute("data-theme","dark");}var v=localStorage.getItem("gate-view");if(!v||JSON.parse(v)==="focus"){d.setAttribute("data-view","focus");}var f=localStorage.getItem("gate-furi");if(f&&JSON.parse(f)==="on")d.setAttribute("data-furi","on");var rj=localStorage.getItem("gate-romaji");if(!rj||JSON.parse(rj)!=="off")d.setAttribute("data-romaji","on");var fx=localStorage.getItem("gate-fx");if(fx&&JSON.parse(fx)==="lite")d.setAttribute("data-fx","lite");var sc=localStorage.getItem("gate-scene");if(!sc||JSON.parse(sc)!=="off")d.setAttribute("data-scene","on");}catch(e){}})();</script>
@@ -512,6 +517,95 @@ html[data-fx="lite"] #petals{display:none}
 .sec h2:focus{outline:none}
 .rail-backup{display:flex;gap:6px}
 .rail-backup .rail-btn{flex:1;text-align:center;font-size:12px}
+.dojo-hud{display:flex;flex-wrap:wrap;gap:6px 14px;align-items:center;margin-bottom:12px;font-family:var(--font-mono);font-size:13px}
+.dojo-hud .hud-item{display:flex;align-items:center;gap:5px;color:var(--mut)}
+.dojo-hud .hud-score{color:var(--acc-deep);font-size:15px;font-weight:700}
+.dojo-hud .hearts{letter-spacing:1px;font-size:13px}
+.dojo-combo b{color:var(--acc-deep)}
+.dojo-combo .flame{filter:drop-shadow(0 0 5px rgba(209,67,107,.65))}
+.dojo-lvlbar{width:110px;height:8px;border-radius:4px;background:var(--line);overflow:hidden;display:inline-block;vertical-align:middle}
+.dojo-lvlbar>i{display:block;height:100%;background:linear-gradient(90deg,var(--acc),var(--acc-deep));width:0;transition:width .3s ease}
+.fcard{position:relative}
+.pts-pop{position:absolute;top:6px;right:14px;font-family:var(--font-display);font-size:24px;font-weight:700;color:var(--ok);pointer-events:none;animation:ptsUp .9s ease forwards}
+.pts-pop.bad{color:var(--bad);font-size:16px}
+@keyframes ptsUp{0%{opacity:0;transform:translateY(6px)}20%{opacity:1}100%{opacity:0;transform:translateY(-24px)}}
+#gfx{position:fixed;inset:0;pointer-events:none;z-index:70}
+@media (prefers-reduced-motion:reduce){.pts-pop{animation:none}}
+
+/* ============================================================
+   MOBILE LAYER — app bar + slide-in nav drawer (≤900px)
+   ============================================================ */
+#mobar{display:none}
+.rail-close{display:none}
+@media (max-width:900px){
+  html{scroll-padding-top:64px}
+  #mobar{display:flex;align-items:center;gap:10px;position:sticky;top:0;z-index:80;
+    padding:calc(8px + env(safe-area-inset-top)) calc(12px + env(safe-area-inset-right)) 8px calc(12px + env(safe-area-inset-left));
+    background:var(--panel);border-bottom:1px solid var(--line);
+    -webkit-backdrop-filter:blur(12px) saturate(1.5);backdrop-filter:blur(12px) saturate(1.5)}
+  #mobar .burger,#mobar .mo-act{width:42px;height:42px;flex:0 0 auto;border:1px solid var(--line);border-radius:11px;
+    background:var(--bg);color:var(--ink);font-size:19px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center}
+  #mobar .burger:active,#mobar .mo-act:active{transform:scale(.93)}
+  #mobar .mo-brand{font-family:var(--font-display);font-weight:700;font-size:16.5px;color:var(--acc-deep);flex:1;min-width:0;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:.3px}
+
+  .app{display:block;box-shadow:none;min-height:0}
+  .main{padding:14px 14px calc(96px + env(safe-area-inset-bottom))}
+
+  /* rail → slide-in drawer */
+  .rail{position:fixed;top:0;left:0;height:100%;height:100dvh;width:min(86vw,330px);z-index:95;gap:12px;
+    padding:14px 14px calc(24px + env(safe-area-inset-bottom));
+    transform:translateX(-102%);transition:transform .27s cubic-bezier(.4,0,.2,1);
+    border-right:1px solid var(--line);border-bottom:none;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
+  body.nav-open .rail{transform:translateX(0);box-shadow:10px 0 44px rgba(0,0,0,.34)}
+  .toc{max-height:none;flex:1 1 auto}
+  .rail-close{display:flex;align-self:flex-end;align-items:center;gap:6px;border:1px solid var(--line);border-radius:9px;
+    background:var(--bg);color:var(--mut);font:inherit;font-size:13px;padding:6px 12px;cursor:pointer;margin-bottom:2px}
+
+  /* scrim behind the drawer */
+  #navscrim{position:fixed;inset:0;z-index:90;background:rgba(10,6,14,.5);opacity:0;pointer-events:none;transition:opacity .27s ease}
+  body.nav-open #navscrim{opacity:1;pointer-events:auto}
+  body.nav-open{overflow:hidden}
+
+  /* finger-friendly targets + no iOS zoom (inputs ≥16px) */
+  .fopt{grid-template-columns:1fr;gap:9px}
+  .fopt button{padding:14px 12px;font-size:16px}
+  .btn{padding:10px 14px}
+  .rail-btn{padding:10px 12px}
+  .done-btn{position:static;margin-bottom:10px}
+  .sec{padding:22px 15px;border-radius:18px}
+  .hero{padding:14px 0 6px}
+  .hero h1{font-size:29px}
+  .sec h2{font-size:26px}
+  .sec h3{font-size:19.5px}
+  .searchbox input,.recall-in,.widget input[type=text],.widget input[type=number],.widget select,#q{font-size:16px}
+  .chapnav{flex-direction:column;gap:9px}
+  .chapnav .cn-next{text-align:left}
+  .chapnav .cn-btn{white-space:normal}
+  .dojo-hud{font-size:12px;gap:5px 10px}
+  .dojo-lvlbar{width:88px}
+  .resume-pill{right:10px;bottom:10px;left:10px;max-width:none}
+  .toast{left:12px;right:12px;bottom:calc(14px + env(safe-area-inset-bottom));transform:translateY(16px);max-width:none}
+  .toast.show{transform:translateY(0)}
+  .tblwrap table{font-size:13px}
+  .ex .ja{font-size:18px}
+  .fcard .fq{font-size:28px}
+  .fcard .fq.small{font-size:20px}
+  .kgrid{grid-template-columns:repeat(5,1fr);max-width:none}
+  .kgrid button{padding:11px 2px}
+  .widget-body{padding:13px}
+  .toc a{padding:9px 8px}                 /* ≈40px tap targets */
+  .toc .toc-part{padding-top:12px}
+  .q-results button{padding:11px 12px}
+  .fold>summary{padding:13px 16px}
+  .copy-btn{opacity:1}                    /* no hover on touch — always show */
+  .speak-btn{padding:3px 10px 4px}
+}
+@media (max-width:380px){
+  .sec{padding:18px 12px}
+  #mobar .mo-brand{font-size:15px}
+  .fcard .fq{font-size:25px}
+}
 </style>
 </head>
 <body>
@@ -2950,6 +3044,137 @@ function runSession(body, qs, onDone) {
   ask();
 }
 
+/* ================= Dojo game layer: combos, hearts, XP, levels ================= */
+function levelFromXp(xp) { var L = 1, need = 100, acc = 0; while (acc + need <= xp) { acc += need; L++; need = 100 * L; } return { level: L, into: xp - acc, need: need }; }
+var DOJO_RANK = ["入門・Newcomer", "初級・Apprentice", "中級・Adept", "上級・Skilled", "黒帯・Black Belt", "達人・Master"];
+function rankName(L) { return DOJO_RANK[Math.min(DOJO_RANK.length - 1, Math.floor((L - 1) / 4))]; }
+var _sfxCtx = null;
+function sfx(kind, n) {
+  try {
+    if (store.get("sfx", "on") === "off" || reduced) return;
+    var AC = window.AudioContext || window.webkitAudioContext; if (!AC) return;
+    _sfxCtx = _sfxCtx || new AC(); var ctx = _sfxCtx; if (ctx.state === "suspended") ctx.resume();
+    var t = ctx.currentTime;
+    function tone(f, dur, type, vol, delay) {
+      var o = ctx.createOscillator(), g = ctx.createGain(); o.type = type || "sine"; o.frequency.value = f;
+      o.connect(g); g.connect(ctx.destination); var s = t + (delay || 0);
+      g.gain.setValueAtTime(0, s); g.gain.linearRampToValueAtTime(vol || 0.1, s + 0.01); g.gain.exponentialRampToValueAtTime(0.0008, s + dur);
+      o.start(s); o.stop(s + dur + 0.02);
+    }
+    if (kind === "good") tone(520 + Math.min(12, n || 0) * 45, 0.16, "sine", 0.09);
+    else if (kind === "bad") tone(150, 0.22, "square", 0.06);
+    else if (kind === "level") [523, 659, 784, 1047].forEach(function (f, k) { tone(f, 0.32, "triangle", 0.1, k * 0.09); });
+  } catch (e) {}
+}
+function dojoCelebrate() {
+  if (reduced) return;
+  var cv = document.getElementById("gfx"); if (!cv) { cv = document.createElement("canvas"); cv.id = "gfx"; document.body.appendChild(cv); }
+  cv.width = innerWidth; cv.height = innerHeight; var ctx = cv.getContext("2d");
+  var cs = getComputedStyle(document.documentElement);
+  var cols = [(cs.getPropertyValue("--acc") || "#d1436b").trim(), (cs.getPropertyValue("--ok") || "#1E7A4C").trim(), "#C9A227", (cs.getPropertyValue("--acc-deep") || "#8A2410").trim()];
+  var parts = [];
+  for (var i = 0; i < 44; i++) { var a = Math.random() * 6.283, v = 3 + Math.random() * 4.5; parts.push({ x: innerWidth / 2, y: innerHeight / 3, vx: Math.cos(a) * v, vy: Math.sin(a) * v - 3, g: 0.14, life: 60 + Math.random() * 22, c: cols[i % cols.length], s: 4 + Math.random() * 4, r: Math.random() * 6.28, vr: (Math.random() - 0.5) * 0.3 }); }
+  (function step() {
+    ctx.clearRect(0, 0, cv.width, cv.height);
+    parts = parts.filter(function (p) { return p.life > 0; });
+    if (!parts.length) return;
+    parts.forEach(function (p) { p.x += p.vx; p.y += p.vy; p.vy += p.g; p.r += p.vr; p.life--; ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.r); ctx.globalAlpha = Math.min(1, p.life / 20); ctx.fillStyle = p.c; ctx.fillRect(-p.s / 2, -p.s / 2, p.s, p.s * 1.6); ctx.restore(); });
+    requestAnimationFrame(step);
+  })();
+}
+/* gamified session runner — used only by the Dojo. Same SRS grading as runSession. */
+function runDojoGame(body, qs, onDone) {
+  body.innerHTML = "";
+  var xp0 = store.get("xp", 0), lv0 = levelFromXp(xp0);
+  var hud = el("div", "dojo-hud");
+  var sEl = el("span", "hud-item"); sEl.innerHTML = "スコア <b class='hud-score'>0</b>";
+  var cEl = el("span", "hud-item dojo-combo");
+  var hEl = el("span", "hud-item hearts");
+  var lvWrap = el("span", "hud-item"); lvWrap.style.flex = "1"; lvWrap.style.minWidth = "150px";
+  var lvtxt = el("span", null, ""); lvtxt.style.cssText = "font-size:11px;color:var(--mut);margin-right:6px;white-space:nowrap";
+  var lvbar = el("div", "dojo-lvlbar"); var lvfill = document.createElement("i"); lvbar.appendChild(lvfill);
+  lvWrap.appendChild(lvtxt); lvWrap.appendChild(lvbar);
+  var sfxBtn = el("button", "btn"); sfxBtn.style.cssText = "padding:2px 8px;font-size:12px";
+  sfxBtn.textContent = store.get("sfx", "on") === "off" ? "🔇" : "🔊";
+  sfxBtn.addEventListener("click", function () { store.set("sfx", store.get("sfx", "on") === "off" ? "on" : "off"); sfxBtn.textContent = store.get("sfx", "on") === "off" ? "🔇" : "🔊"; });
+  hud.appendChild(sEl); hud.appendChild(cEl); hud.appendChild(hEl); hud.appendChild(lvWrap); hud.appendChild(sfxBtn);
+  var card = el("div", "fcard"); var fq = el("div", "fq"); var fhint = el("div", "fhint"); card.appendChild(fq); card.appendChild(fhint);
+  var optBox = el("div", "fopt"); var narr = el("div", "narr"); narr.setAttribute("aria-live", "polite");
+  body.appendChild(hud); body.appendChild(card); body.appendChild(optBox); body.appendChild(narr);
+  var i = 0, score = 0, combo = 0, maxCombo = 0, hearts = 3, correct = 0, tQ = 0;
+  function mult() { return Math.min(5, 1 + Math.floor(combo / 3)); }
+  function drawHud() {
+    sEl.querySelector("b").textContent = score;
+    cEl.innerHTML = combo >= 2 ? "<span class='flame'>🔥</span> <b>" + combo + " コンボ ×" + mult() + "</b>" : "";
+    hEl.textContent = "❤".repeat(hearts) + "🤍".repeat(Math.max(0, 3 - hearts));
+    var lv = levelFromXp(xp0 + score); lvtxt.textContent = "Lv " + lv.level; lvfill.style.width = Math.round(100 * lv.into / lv.need) + "%";
+  }
+  function popPts(txt, good) { var p = el("div", "pts-pop" + (good ? "" : " bad"), txt); card.appendChild(p); setTimeout(function () { if (p.parentNode) p.remove(); }, 900); }
+  function afterAnswer(ok, q) {
+    if (q.srs && typeof SRS !== "undefined") SRS.grade(q.srs, ok, q.srsType);
+    if (ok) {
+      combo++; maxCombo = Math.max(maxCombo, combo); correct++;
+      var dt = Date.now() - tQ, spd = dt < 3000 ? 5 : (dt < 6000 ? 2 : 0);
+      var pts = 10 * mult() + spd; score += pts; sfx("good", combo); popPts("+" + pts + (mult() > 1 ? " ×" + mult() : ""), true);
+    } else { combo = 0; hearts = Math.max(0, hearts - 1); sfx("bad"); popPts("miss", false); }
+    drawHud();
+    if (q.say) speak(q.say);
+    var next = el("button", "btn primary", i + 1 < qs.length ? "Next →" : "Finish"); next.style.marginTop = "10px";
+    next.addEventListener("click", function () { i++; if (i < qs.length) ask(); else finish(); });
+    narr.appendChild(document.createTextNode("\n")); narr.appendChild(next); next.focus();
+  }
+  function ask() {
+    var q = qs[i]; tQ = Date.now();
+    fq.textContent = q.prompt; fq.className = "fq" + (q.prompt.length > 14 ? " small" : "") + " jp";
+    fhint.textContent = (i + 1) + " / " + qs.length + (q.promptHint ? " · " + q.promptHint : "");
+    optBox.innerHTML = ""; narr.textContent = "";
+    if (q.type === "type") { askType(q); return; }
+    q.opts.forEach(function (o, k) {
+      var b = el("button", null, o); b.type = "button"; b.lang = "ja";
+      b.addEventListener("click", function () {
+        $$("button", optBox).forEach(function (x) { x.disabled = true; });
+        var ok = k === q.a;
+        if (ok) { b.classList.add("okc"); narr.textContent = "○ " + (q.why || ""); }
+        else { b.classList.add("badc"); $$("button", optBox)[q.a].classList.add("okc"); narr.textContent = "✗ Correct: " + q.opts[q.a] + (q.why ? "\n" + q.why : ""); }
+        afterAnswer(ok, q);
+      });
+      optBox.appendChild(b);
+    });
+  }
+  function askType(q) {
+    var wrap = el("div", "recall"); var inp = document.createElement("input"); inp.type = "text"; inp.className = "recall-in"; inp.lang = "ja"; inp.placeholder = "type the reading — kana or romaji";
+    var sub = el("button", "btn primary", "Check"); wrap.appendChild(inp); wrap.appendChild(sub); optBox.appendChild(wrap);
+    function submit() {
+      if (inp.disabled) return; inp.disabled = true; sub.disabled = true;
+      var ok = (q.accept || []).some(function (a) { return acceptReading(inp.value, a); });
+      if (ok) { inp.classList.add("okc"); narr.textContent = "○ " + (q.why || ""); }
+      else { inp.classList.add("badc"); narr.textContent = "✗ " + (q.show || "") + (q.why ? "\n" + q.why : ""); }
+      afterAnswer(ok, q);
+    }
+    sub.addEventListener("click", submit); inp.addEventListener("keydown", function (e) { if (e.key === "Enter") submit(); }); inp.focus();
+  }
+  function finish() {
+    var acc = Math.round(100 * correct / qs.length), bonus = 0, tags = [];
+    if (hearts === 3) { bonus += 50; tags.push("FLAWLESS +50"); } else if (hearts > 0) { bonus += 20; tags.push("cleared +20"); }
+    if (maxCombo >= 10) { bonus += 20; tags.push("combo master +20"); }
+    var gained = score + bonus, newXp = xp0 + gained; store.set("xp", newXp);
+    var before = lv0.level, afterL = levelFromXp(newXp).level;
+    var pb = store.get("dojopb", 0), isBest = score > pb; if (isBest) store.set("dojopb", score);
+    hud.remove(); card.remove(); optBox.remove();
+    narr.textContent = "Score " + score + (bonus ? "  +" + bonus + " bonus (" + tags.join(", ") + ")" : "") +
+      "\naccuracy " + acc + "%  ·  best combo " + maxCombo + "  ·  " + correct + "/" + qs.length + " correct" +
+      "\nXP +" + gained + "  →  Level " + afterL + " · " + rankName(afterL) +
+      "\nPersonal best: " + Math.max(score, pb) + (isBest ? "   🎉 NEW BEST" : "");
+    if (afterL > before) { sfx("level"); dojoCelebrate(); var t = el("div"); t.style.cssText = "margin-top:10px;font-family:var(--font-display);font-size:22px;color:var(--acc-deep)"; t.textContent = "LEVEL UP!  Lv " + afterL + " · " + rankName(afterL); narr.appendChild(t); }
+    else if (isBest || hearts === 3) dojoCelebrate();
+    var again = el("button", "btn primary", "Run again"); again.style.marginTop = "10px";
+    again.addEventListener("click", function () { if (onDone) onDone(true); });
+    narr.appendChild(document.createTextNode("\n")); narr.appendChild(again);
+    if (onDone) onDone(false, correct, qs.length);
+  }
+  drawHud(); ask();
+}
+
 /* build MCQ questions from a vocab list. mode: m2e | reading | e2m */
 function vocabQs(list, mode, n, tagChap) {
   var pool = list.filter(function (w) { return mode !== "reading" || w[1] !== w[0]; });
@@ -3451,7 +3676,7 @@ W.dailydrill = { title: function (arg) { return arg === "all" ? "Instrument — 
         opts: opts, a: opts.indexOf(correct), srs: it.id, srsType: "v",
         why: w[0] + "（" + w[1] + (ROMAJI_ON() ? " · " + toRomaji(w[1]) : "") + "）— " + w[2] };
     });
-    runSession(box, qs, function (again, score, total) {
+    runDojoGame(box, qs, function (again, score, total) {
       if (again) { start(); return; }
       if (score != null) {
         var hist = store.get("dojo", {}), today = dayStr();
@@ -3466,7 +3691,7 @@ W.dailydrill = { title: function (arg) { return arg === "all" ? "Instrument — 
   body.appendChild(stats); body.appendChild(ctl); body.appendChild(box); refreshStats();
   var note = el("div", "narr", arg === "all"
     ? "Final-review mode draws from the whole book. Spaced repetition still surfaces your weakest and most-overdue items first."
-    : "Spaced repetition — the memory that this book keeps for you. Every answer is recorded; miss an item and it returns soon, know it and it drifts to the back. “Due now” is what genuinely needs you today. Switch to recall mode to TYPE the reading instead of picking it — harder, and worth far more.");
+    : "Spaced repetition — the memory that this book keeps for you. Every answer is recorded; miss an item and it returns soon, know it and it drifts to the back. “Due now” is what genuinely needs you today. Combos multiply your score, hearts track a clean run, and every session earns XP toward the next level. Switch to recall mode to TYPE the reading instead of picking it — harder, worth more points, worth far more learning.");
   body.appendChild(note);
 }};
 /* ================= romaji engine (training wheels) ================= */
@@ -3518,40 +3743,52 @@ function exRoma(jaEl) {
       walk(Array.prototype.slice.call(n.childNodes));
     });
   })(nodes);
-  /* assemble: join ruby readings with conjugation tails; space around particles */
-  var PART = "はがをにでともへのよね";
-  function isKata(c) { return /[ァ-ヶー]/.test(c); }
-  var kana = "";
-  for (var pi = 0; pi < parts.length; pi++) {
-    var seg = parts[pi], prev = parts[pi - 1], next = parts[pi + 1];
-    var t = seg.t;
-    if (!seg.r) {
-      t = t.replace(/には/g, "にわ").replace(/では/g, "でわ").replace(/とは/g, "とわ");
-      /* leading particle right after a kanji word: split + fix pronunciation */
-      if (prev && prev.r && t.length && PART.indexOf(t.charAt(0)) >= 0 && (t.length === 1 || PART.indexOf(t.charAt(1)) < 0)
-          && !(t.charAt(0) === "で" && "すし".indexOf(t.charAt(1)) >= 0)) {
-        var pt = t.charAt(0);
-        if (pt === "は") pt = "わ"; if (pt === "へ") pt = "え";
-        t = pt + (t.length > 1 ? " " + t.slice(1) : "");
-      }
-      /* trailing particle right before the next kanji word: split it off */
-      if (next && next.r && t.length > 1) {
-        var lt = t.charAt(t.length - 1);
-        if (PART.indexOf(lt) >= 0) {
-          if (lt === "は") lt = "わ"; if (lt === "へ") lt = "え";
-          t = t.slice(0, -1) + " " + lt;
-        }
-      }
-    }
-    if (prev) {
-      if (prev.r && seg.r) kana += " ";
-      else if (prev.r && !seg.r && (PART.indexOf(seg.t.charAt(0)) >= 0 || isKata(seg.t.charAt(0)))) kana += " ";
-      else if (!prev.r && seg.r) kana += " ";
-    }
-    kana += t;
+  /* --- assemble conservatively: NEVER split a particle out of a content word.
+     Ruby readings are words; a whole particle text-node is a word; hiragana
+     right after a ruby is okurigana and glues on. Everything else stays intact. --- */
+  var hasRuby = parts.some(function (s) { return s.r; });
+  if (!hasRuby) {
+    /* kana-only sentence: only the unambiguous particles は・へ・を・が get spaced/fixed */
+    var k = parts.map(function (s) { return s.t; }).join("");
+    k = k.replace(/(.)は(?=.|$)/g, "$1 わ ").replace(/(.)へ(?=[^\s])/g, "$1 え ")
+         .replace(/(.)を/g, "$1 を ").replace(/(.)が/g, "$1 が ").replace(/か([。、！？]?)$/, " か$1");
+    return toRomaji(k).replace(/\s+([.,!?])/g, "$1").replace(/\s+/g, " ").trim();
   }
-  kana = kana.replace(/\s+/g, " ").trim();
-  return toRomaji(kana);
+  var PART = { "は": "wa", "が": "ga", "を": "o", "に": "ni", "へ": "e", "で": "de", "と": "to", "も": "mo", "の": "no", "や": "ya", "か": "ka", "ね": "ne", "よ": "yo", "わ": "wa",
+    "から": "kara", "まで": "made", "より": "yori", "ので": "node", "のに": "noni", "には": "niwa", "では": "dewa", "でも": "demo", "とは": "towa", "にも": "nimo", "へも": "emo" };
+  var out = "";
+  for (var pi = 0; pi < parts.length; pi++) {
+    var seg = parts[pi], prev = parts[pi - 1];
+    if (seg.r) { out += (out ? " " : "") + toRomaji(seg.t); continue; }
+    var raw = seg.t.replace(/\s+/g, "");
+    if (!raw) continue;
+    if (raw === "/") { out += (out ? " " : "") + "/"; continue; }
+    if (PART.hasOwnProperty(raw)) { out += (out ? " " : "") + PART[raw]; continue; }
+    if (/^[。、！？!?…]+$/.test(raw)) { out += (toRomaji(raw).trim() || raw); continue; }
+    /* content word possibly carrying a leading/trailing particle bundled by the markup */
+    var pieces = splitParticles(raw);
+    var startsP = /^(から|まで|より|は|が|を|に|へ)/.test(raw);
+    var glue0 = !!(prev && prev.r && !startsP && /^[ぁ-ん]/.test(raw));
+    for (var pj = 0; pj < pieces.length; pj++) {
+      var pr = toRomaji(pieces[pj]); if (!pr) continue;
+      out += (out && !(pj === 0 && glue0) ? " " : "") + pr;
+    }
+  }
+  return out.replace(/\s+([.,!?])/g, "$1").replace(/\s+/g, " ").trim();
+}
+/* peel clear leading/trailing particles off a kana run; convert は→わ, へ→え.
+   Deliberately conservative: excludes で・と・も・の・に-trailing (word-internal risk: です・ちょっと・もの・この). */
+function splitParticles(s) {
+  var res = [], tail = [], m, punct = "";
+  var pm = /^([\s\S]*?)([。、！？!?…]+)$/.exec(s); if (pm) { s = pm[1]; punct = pm[2]; }
+  while ((m = /^(から|まで|より)([\s\S]+)/.exec(s))) { res.push(m[1]); s = m[2]; }
+  while ((m = /^(は|が|を|に|へ)([\s\S]+)/.exec(s))) { var p = m[1]; res.push(p === "は" ? "わ" : p === "へ" ? "え" : p); s = m[2]; }
+  while ((m = /^([\s\S]+?)(か|ね|よ|は|へ|を|が)$/.exec(s))) { var q = m[2]; tail.unshift(q === "は" ? "わ" : q === "へ" ? "え" : q); s = m[1]; }
+  if (s === "は") s = "わ"; else if (s === "へ") s = "え";   /* lone particle left after punctuation strip */
+  if (s) res.push(s);
+  var all = res.concat(tail).filter(Boolean);
+  if (punct && all.length) all[all.length - 1] += punct;
+  return all;
 }
 $$(".ex .ja").forEach(function (ja) {
   try {
@@ -4325,7 +4562,7 @@ var Scene = (function () {
       sway: 0.5 + Math.random() * 1.1, ph: Math.random() * 6.28, rot: Math.random() * 6.28, vr: (Math.random() - 0.5) * 0.04,
       c: tints[(Math.random() * tints.length) | 0] };
   }
-  function build() { var n = W < 700 ? 8 : (W < 1500 ? 14 : 18); petals = []; for (var i = 0; i < n; i++) petals.push(mk(false)); }
+  function build() { var n = W < 700 ? 4 : (W < 1500 ? 6 : 9); petals = []; for (var i = 0; i < n; i++) petals.push(mk(false)); }
   function draw() {
     ctx.clearRect(0, 0, W, H);
     for (var i = 0; i < petals.length; i++) {
@@ -4697,6 +4934,65 @@ var Music = (function () {
       setTimeout(function () { toast.classList.remove("show"); }, 6500);
     }
   })();
+})();
+</script>
+<script>
+/* ============================================================
+   The Gate — mobile app bar + slide-in nav drawer.
+   Standalone; harmless on desktop (#mobar hidden via CSS).
+   ============================================================ */
+(function () {
+  "use strict";
+  var body = document.body, rail = document.querySelector(".rail");
+  if (!rail) return;
+  function el(t, c, x) { var e = document.createElement(t); if (c) e.className = c; if (x != null) e.textContent = x; return e; }
+
+  var bar = el("div"); bar.id = "mobar";
+  var burger = el("button", "burger", "☰"); burger.type = "button"; burger.setAttribute("aria-label", "Open navigation"); burger.setAttribute("aria-expanded", "false");
+  var brand = el("div", "mo-brand", "The Gate");
+  var themeBtn = el("button", "mo-act", "◐"); themeBtn.type = "button"; themeBtn.setAttribute("aria-label", "Toggle light/dark theme");
+  bar.appendChild(burger); bar.appendChild(brand); bar.appendChild(themeBtn);
+  var app = document.querySelector(".app");
+  body.insertBefore(bar, app || body.firstChild);
+
+  var scrim = el("div"); scrim.id = "navscrim"; scrim.setAttribute("aria-hidden", "true"); body.appendChild(scrim);
+
+  var closeBtn = el("button", "rail-close", "✕ Close"); closeBtn.type = "button";
+  rail.insertBefore(closeBtn, rail.firstChild);
+
+  function open() { body.classList.add("nav-open"); burger.setAttribute("aria-expanded", "true"); }
+  function close() { body.classList.remove("nav-open"); burger.setAttribute("aria-expanded", "false"); }
+  burger.addEventListener("click", function () { body.classList.contains("nav-open") ? close() : open(); });
+  scrim.addEventListener("click", close);
+  closeBtn.addEventListener("click", close);
+  themeBtn.addEventListener("click", function () { if (window.__toggleTheme) window.__toggleTheme(); });
+  document.addEventListener("keydown", function (e) { if (e.key === "Escape") close(); });
+
+  /* selecting a chapter or search hit closes the drawer */
+  document.addEventListener("click", function (e) {
+    if (!body.classList.contains("nav-open")) return;
+    var t = e.target;
+    if (t && t.closest && (t.closest("#toc a") || t.closest("#q-results button"))) setTimeout(close, 80);
+  });
+
+  /* app-bar title tracks the chapter you're in (focus mode always has one) */
+  function updateBrand() {
+    var f = document.querySelector("section.sec.focused");
+    var src = f;
+    if (!src) { var a = document.querySelector("#toc a.active"); if (a) { brand.textContent = a.textContent.replace(/\s+/g, " ").trim(); return; } }
+    if (src) {
+      var eb = src.querySelector(".eyebrow"), h = src.querySelector("h2");
+      var code = eb && eb.childNodes[0] ? String(eb.childNodes[0].nodeValue).trim() : "";
+      brand.textContent = (code ? code + " · " : "") + (h ? h.textContent : "The Gate");
+      return;
+    }
+    brand.textContent = "The Gate";
+  }
+  updateBrand();
+  document.addEventListener("click", function () { setTimeout(updateBrand, 120); });
+  var tk = false;
+  addEventListener("scroll", function () { if (!tk) { tk = true; requestAnimationFrame(function () { tk = false; updateBrand(); }); } }, { passive: true });
+  addEventListener("hashchange", updateBrand);
 })();
 </script>
 </body>
