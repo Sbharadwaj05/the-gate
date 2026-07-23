@@ -394,7 +394,12 @@ html[data-theme="dark"]{
 html,body{background:var(--sky-2)}
 
 /* ---- the scenery: real photographs, tinted so text always wins ---- */
-#scene{position:fixed;inset:0;z-index:0;overflow:hidden;pointer-events:none;
+/* NOTE: height must NOT be `inset:0`/100% — on mobile that tracks the *visual*
+   viewport, so when the URL bar retracts mid-scroll the layer resizes and the
+   cover-scaled photo visibly zooms/drifts. 100lvh is the LARGE viewport and is
+   constant, so the scenery stays nailed down while you scroll. */
+#scene{position:fixed;top:0;left:0;width:100%;height:100vh;height:100lvh;
+  z-index:0;overflow:hidden;pointer-events:none;transform:translateZ(0);
   background:linear-gradient(165deg,var(--sky-1),var(--sky-2) 42%,var(--sky-3) 74%,var(--sky-4))}
 html:not([data-scene]) #scene{display:none}
 #scene>div{position:absolute}
@@ -490,10 +495,18 @@ html[data-theme="dark"] .sec:hover{box-shadow:0 34px 84px rgba(0,0,0,.56),inset 
 .chapnav .cn-btn{background:linear-gradient(160deg,var(--glass-a),var(--glass-b));border:1px solid var(--glass-brd);
   -webkit-backdrop-filter:blur(16px) saturate(1.5);backdrop-filter:blur(16px) saturate(1.5)}
 .resume-pill,.q-results,#onb .card,.toast{-webkit-backdrop-filter:blur(20px) saturate(1.5);backdrop-filter:blur(20px) saturate(1.5)}
-/* mobile: SAME transparent glass (consistent with desktop), lighter blur for perf.
-   'Effects: lite' still turns blur off entirely for low-end phones. */
+/* MOBILE RENDERING — panels keep the exact same transparency, but we do NOT use
+   backdrop-filter here. Backdrop blur re-samples the backdrop every frame over a
+   fixed photo: that is what makes phone scrolling stutter and the background appear
+   to "swim". Instead the photo itself is blurred ONCE (a static layer that is free
+   to scroll over) — same frosted look, none of the per-frame cost. */
 @media (max-width:900px){
-  .sec,.rail,.chapnav .cn-btn{-webkit-backdrop-filter:blur(13px) saturate(1.45);backdrop-filter:blur(13px) saturate(1.45)}
+  .sec,.rail,.chapnav .cn-btn,.resume-pill,.q-results,#onb .card,.toast{
+    -webkit-backdrop-filter:none;backdrop-filter:none}
+  .scene-photo{filter:saturate(.95) blur(3px);transform:scale(1.06)}
+  /* re-estimating off-screen section heights shifts the scroll position mid-scroll;
+     pointless anyway when focus mode shows one chapter at a time */
+  .sec{content-visibility:visible;contain-intrinsic-size:auto}
 }
 
 /* ---- romaji training wheels ---- */
@@ -540,6 +553,11 @@ html[data-fx="lite"] #petals{display:none}
 .rail-close{display:none}
 @media (max-width:900px){
   html{scroll-padding-top:64px}
+  /* stop the browser's pull-to-refresh / scroll-chaining from grabbing the gesture */
+  body{overscroll-behavior-y:contain}
+  /* must live in THIS (last) block to beat the base `.sec{content-visibility:auto}`.
+     Off-screen height estimation re-flows mid-scroll and shifts your position. */
+  .sec{content-visibility:visible;contain-intrinsic-size:auto}
   #mobar{display:flex;align-items:center;gap:10px;position:sticky;top:0;z-index:80;
     padding:calc(8px + env(safe-area-inset-top)) calc(12px + env(safe-area-inset-right)) 8px calc(12px + env(safe-area-inset-left));
     background:var(--panel);border-bottom:1px solid var(--line);
